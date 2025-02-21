@@ -37,4 +37,16 @@ Although the exact structure remains partially inferred, the overall pattern sug
 
 ## Concluding Notes
 
-Because the format is partially inferred, further reverse engineering may be necessary to confirm exact offsets, field sizes, and the presence of additional unknown data. However, from the game code, a .blb file appears to be a multi-entry container that includes level definitions and movie/cutscene references, along with a header region that enumerates them.
+Because the format is partially inferred, further reverse engineering may be necessary to confirm exact offsets, field sizes, and the presence of additional unknown data. However, from the code in “slus_006.01/blb.c” and references throughout the code base, we can identify how the BLB is parsed, which data structures get populated, etc. In particular:
+
+• The “initialise_blb_struct(astruct_8 *blb_loading_struct,int buffer,void *load_asset_function)” function sets up a “blb_loading_struct”—a container that holds a pointer to the BLB data (game_blb_ptr) plus a function pointer for loading or referencing assets.
+
+• The “parse_blb_header(astruct_5 *something,int ptr_to_level_data)” function reads the BLB’s header section to locate specific entries. It checks values at offsets like 0xf36, 0xf92, etc. to determine how many sub-entries exist and what each one contains.
+
+• The “ptr_end_of_blb_header(astruct_10 *buffer)” function returns a byte from the BLB header region (0xf31 offset) used to determine how many entries are in the file, or a boundary in the header.
+
+• Calls like “load_game_blb_asset(offset,sector_count,u_long *buffer_pointer)” indicate that data from the BLB may be loaded from disc, using offset and sector counts in the BLB’s header.
+
+• Specific values of (byte)0x01, (byte)0x02, (byte)0x03, etc. can identify different resource types (levels, cutscenes, etc.), with code branching depending on these values. At run time, the engine checks these bytes to decide whether to load a movie reference or a level resource.
+
+Thus, from the game code, a .blb file is effectively a multi-entry container of level definitions, references to movie/cutscene data, and offset tables for each resource chunk. Further reverse engineering or debugging can confirm how many total entries exist, what each block stores, and any unknown fields remaining in the BLB format.
