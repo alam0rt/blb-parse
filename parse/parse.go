@@ -10,11 +10,15 @@ import (
 
 // BLBTemplateHeader is the top-level structure describing the BLB header.
 type BLBTemplateHeader struct {
-	Levels []Level `json:"levels"`
-	// Movies removed.
+	Levels         []Level         `json:"levels"`
+	Movies         Movies          `json:"movies"`
 	LoadingScreens []LoadingScreen `json:"loading_screens"`
-	LeftoverMiddle []byte          `json:"-"` // leftover between levels and screens
 	LeftoverFinal  []byte          `json:"-"` // leftover after loading screens
+}
+
+// Movies is the 0x26-byte region at offset 0xB60
+type Movies struct {
+	Data [0x26]byte
 }
 
 // The size of each "sector"
@@ -113,7 +117,7 @@ type LoadingScreen struct {
  *                         PARSING
  *************************************************************************/
 
-// ParseHeaderBin reads only levels and loading screens, ignoring the 0xb60 movies.
+// ParseHeaderBin reads only levels, movies (0x26 bytes), & loading screens.
 func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 	if len(data) < 0x1000 {
 		return nil, errors.New("data must be at least 0x1000 bytes")
@@ -123,7 +127,7 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 	hdr := &BLBTemplateHeader{}
 	offset := 0
 
-	// parse levels
+	// parse all possible levels
 	for {
 		if offset+0x70 > 0x1000 {
 			break
@@ -132,26 +136,31 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 			break
 		}
 		var raw rawLevel
-		rawBytes := data[offset : offset+0x70]
-		if err := bytesToStruct(rawBytes, &raw); err != nil {
+		if err := bytesToStruct(data[offset:offset+0x70], &raw); err != nil {
 			return nil, err
 		}
 		offset += 0x70
 		hdr.Levels = append(hdr.Levels, rawToLevel(raw))
 	}
 
-	// If there's leftover between levels and 0xb60, store it
+	// skip up to 0xb60
 	if offset < 0xb60 {
-		hdr.LeftoverMiddle = data[offset:0xb60]
 		offset = 0xb60
+	}
+
+	// parse movies if we have enough space for 0x26 bytes
+	if offset+0x26 <= 0xb86 {
+		copy(hdr.Movies.Data[:], data[offset:offset+0x26])
+		offset += 0x26
+	}
+
+	// skip up to 0xb86 for loading screens
+	if offset < 0xb86 {
+		offset = 0xb86
 	}
 
 	// parse loading screens
 	screenOffset := offset
-	if screenOffset < 0xb60 {
-		screenOffset = 0xb60
-	}
-	var screens []LoadingScreen
 	for {
 		if screenOffset+16 > 0x1000 {
 			break
@@ -169,10 +178,10 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 		}
 		copy(ls.ID[:], buf[7:12])
 		copy(ls.Name[:], buf[12:16])
-		screens = append(screens, ls)
+		hdr.LoadingScreens = append(hdr.LoadingScreens, ls)
 		screenOffset += 16
 	}
-	hdr.LoadingScreens = screens
+
 	// leftover data
 	if screenOffset < 0x1000 {
 		hdr.LeftoverFinal = data[screenOffset:0x1000]
@@ -185,12 +194,13 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
  *                        SERIALIZATION
  *************************************************************************/
 
-// SerializeHeaderJSON writes only levels and loading screens, ignoring the 0xb60 movie region.
+// SerializeHeaderJSON writes levels, the 0x26-byte movies region, and loading screens.
 func SerializeHeaderJSON(hdr *BLBTemplateHeader) []byte {
 	buf := make([]byte, 0x1000)
 
-	// 1) Write levels up front
 	offset := 0
+
+	// 1) Write levels
 	for _, lvl := range hdr.Levels {
 		if offset+0x70 >= 0x1000 {
 			break
@@ -200,42 +210,45 @@ func SerializeHeaderJSON(hdr *BLBTemplateHeader) []byte {
 		offset += 0x70
 	}
 
-	// if leftoverMiddle is present, copy it in
-	if offset < 0xb60 && len(hdr.LeftoverMiddle) > 0 {
-		copy(buf[offset:], hdr.LeftoverMiddle)
-		offset = 0xb60
-	} else {
-		for i := offset; i < 0xb60; i++ {
+	// skip to 0xb60
+	if offset < 0xb60 {
+		for i := offset; i < 0xb60 && i < 0x1000; i++ {
 			buf[i] = 0
 		}
 		offset = 0xb60
 	}
 
-	// 3) loading screens
-	screenOffset := offset
-	if screenOffset < 0xb60 {
-		screenOffset = 0xb60
+	// 2) write movies if we have space for 0x26 bytes
+	if offset+0x26 <= 0xb86 {
+		copy(buf[offset:], hdr.Movies.Data[:])
+		offset += 0x26
 	}
-	maxScreens := len(hdr.LoadingScreens)
-	if maxScreens > 32 {
-		maxScreens = 32
+
+	// skip to 0xb86
+	if offset < 0xb86 {
+		for i := offset; i < 0xb86 && i < 0x1000; i++ {
+			buf[i] = 0
+		}
+		offset = 0xb86
 	}
-	for i := 0; i < maxScreens; i++ {
-		if screenOffset+16 > 0x1000 {
+
+	// 3) write loading screens
+	for i := 0; i < len(hdr.LoadingScreens) && i < 32; i++ {
+		if offset+16 > 0x1000 {
 			break
 		}
-		data := loadScreenToBytes(hdr.LoadingScreens[i])
-		copy(buf[screenOffset:], data)
-		screenOffset += 16
+		temp := loadScreenToBytes(hdr.LoadingScreens[i])
+		copy(buf[offset:], temp)
+		offset += 16
 	}
-	// No forced zeroing for leftover screen slots; leftoverFinal will preserve original data
 
-	if screenOffset < 0x1000 && len(hdr.LeftoverFinal) > 0 {
-		end := screenOffset + len(hdr.LeftoverFinal)
+	// leftover
+	if offset < 0x1000 && len(hdr.LeftoverFinal) > 0 {
+		end := offset + len(hdr.LeftoverFinal)
 		if end > 0x1000 {
 			end = 0x1000
 		}
-		copy(buf[screenOffset:end], hdr.LeftoverFinal[:end-screenOffset])
+		copy(buf[offset:end], hdr.LeftoverFinal[:end-offset])
 	}
 
 	return buf

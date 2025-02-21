@@ -74,6 +74,7 @@ func TestHeaderBinTruncated(t *testing.T) {
 		truncatedScreens = append(truncatedScreens, hdr.LoadingScreens[0])
 	}
 	hdr.LoadingScreens = truncatedScreens
+	hdr.LeftoverFinal = nil
 
 	got := parse.SerializeHeaderJSON(hdr)
 	if len(got) != 0x1000 {
