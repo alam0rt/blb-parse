@@ -69,9 +69,9 @@ func TestHeaderBinTruncated(t *testing.T) {
 	}
 
 	// Keep only the first loading screen
-	var truncatedScreens [32]parse.LoadingScreen
+	var truncatedScreens []parse.LoadingScreen
 	if len(hdr.LoadingScreens) > 0 {
-		truncatedScreens[0] = hdr.LoadingScreens[0]
+		truncatedScreens = append(truncatedScreens, hdr.LoadingScreens[0])
 	}
 	hdr.LoadingScreens = truncatedScreens
 

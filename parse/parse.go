@@ -12,8 +12,9 @@ import (
 type BLBTemplateHeader struct {
 	Levels []Level `json:"levels"`
 	// Movies removed.
-	LoadingScreens [32]LoadingScreen `json:"loading_screens"`
-	LeftoverFinal  []byte            `json:"-"` // leftover after loading screens
+	LoadingScreens []LoadingScreen `json:"loading_screens"`
+	LeftoverMiddle []byte          `json:"-"` // leftover between levels and screens
+	LeftoverFinal  []byte          `json:"-"` // leftover after loading screens
 }
 
 // The size of each "sector"
@@ -139,8 +140,9 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 		hdr.Levels = append(hdr.Levels, rawToLevel(raw))
 	}
 
-	// skip directly to 0xb60 for loading screens
+	// If there's leftover between levels and 0xb60, store it
 	if offset < 0xb60 {
+		hdr.LeftoverMiddle = data[offset:0xb60]
 		offset = 0xb60
 	}
 
@@ -149,8 +151,12 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 	if screenOffset < 0xb60 {
 		screenOffset = 0xb60
 	}
-	for i := 0; i < 32; i++ {
+	var screens []LoadingScreen
+	for {
 		if screenOffset+16 > 0x1000 {
+			break
+		}
+		if data[screenOffset] == 0 {
 			break
 		}
 		buf := data[screenOffset : screenOffset+16]
@@ -163,10 +169,10 @@ func ParseHeaderBin(data []byte) (*BLBTemplateHeader, error) {
 		}
 		copy(ls.ID[:], buf[7:12])
 		copy(ls.Name[:], buf[12:16])
-		hdr.LoadingScreens[i] = ls
+		screens = append(screens, ls)
 		screenOffset += 16
 	}
-
+	hdr.LoadingScreens = screens
 	// leftover data
 	if screenOffset < 0x1000 {
 		hdr.LeftoverFinal = data[screenOffset:0x1000]
@@ -194,8 +200,11 @@ func SerializeHeaderJSON(hdr *BLBTemplateHeader) []byte {
 		offset += 0x70
 	}
 
-	// zero out from offset..0xb60
-	if offset < 0xb60 {
+	// if leftoverMiddle is present, copy it in
+	if offset < 0xb60 && len(hdr.LeftoverMiddle) > 0 {
+		copy(buf[offset:], hdr.LeftoverMiddle)
+		offset = 0xb60
+	} else {
 		for i := offset; i < 0xb60; i++ {
 			buf[i] = 0
 		}
@@ -207,7 +216,11 @@ func SerializeHeaderJSON(hdr *BLBTemplateHeader) []byte {
 	if screenOffset < 0xb60 {
 		screenOffset = 0xb60
 	}
-	for i := 0; i < 32; i++ {
+	maxScreens := len(hdr.LoadingScreens)
+	if maxScreens > 32 {
+		maxScreens = 32
+	}
+	for i := 0; i < maxScreens; i++ {
 		if screenOffset+16 > 0x1000 {
 			break
 		}
@@ -215,8 +228,8 @@ func SerializeHeaderJSON(hdr *BLBTemplateHeader) []byte {
 		copy(buf[screenOffset:], data)
 		screenOffset += 16
 	}
+	// No forced zeroing for leftover screen slots; leftoverFinal will preserve original data
 
-	// leftover
 	if screenOffset < 0x1000 && len(hdr.LeftoverFinal) > 0 {
 		end := screenOffset + len(hdr.LeftoverFinal)
 		if end > 0x1000 {
