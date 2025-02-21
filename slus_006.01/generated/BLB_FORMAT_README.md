@@ -50,3 +50,5 @@ Because the format is partially inferred, further reverse engineering may be nec
 • Specific values of (byte)0x01, (byte)0x02, (byte)0x03, etc. can identify different resource types (levels, cutscenes, etc.), with code branching depending on these values. At run time, the engine checks these bytes to decide whether to load a movie reference or a level resource.
 
 Thus, from the game code, a .blb file is effectively a multi-entry container of level definitions, references to movie/cutscene data, and offset tables for each resource chunk. Further reverse engineering or debugging can confirm how many total entries exist, what each block stores, and any unknown fields remaining in the BLB format.
+
+Additionally, the “slus_006.01/blb_template.bt” file provides an illustrative 010 Editor template for parsing .blb files. It shows loops and structures hypothesized to represent levels, movies, offsets, size fields, and embedded data sections. This template suggests that each resource block includes metadata (offset, size, entry ID) followed by raw content, and that the game iterates across these blocks to load or process each asset.
