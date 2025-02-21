@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template_results version="1.0">
+ <variable>
+  <name>header</name>
+  <start>0h</start>
+  <size>0h</size>
+  <type>struct HEADER</type>
+  <variable>
+   <name>levels</name>
+   <start>0h</start>
+   <size>B60h</size>
+   <type>struct LEVELS</type>
+   <variable>
+    <name>level[0]</name>
+    <start>0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Options</value>
+   </variable>
+   <variable>
+    <name>level_data[0]</name>
+    <start>C800h</start>
+    <size>10000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[0]</name>
+    <start>1C800h</start>
+    <size>20800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[0]</name>
+    <start>3D000h</start>
+    <size>F2000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[1]</name>
+    <start>70h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Skullmonkey Gate</value>
+   </variable>
+   <variable>
+    <name>level_data[1]</name>
+    <start>3FC000h</start>
+    <size>9F800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[1]</name>
+    <start>49B800h</start>
+    <size>6A000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[1]</name>
+    <start>505800h</start>
+    <size>4D800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[2]</name>
+    <start>E0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Science Center</value>
+   </variable>
+   <variable>
+    <name>level_data[2]</name>
+    <start>632000h</start>
+    <size>9F000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[2]</name>
+    <start>6D1000h</start>
+    <size>65800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[2]</name>
+    <start>736800h</start>
+    <size>4E800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[3]</name>
+    <start>150h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Monkey Shrines</value>
+   </variable>
+   <variable>
+    <name>level_data[3]</name>
+    <start>9EF000h</start>
+    <size>AB000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[3]</name>
+    <start>A9A000h</start>
+    <size>68800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[3]</name>
+    <start>B02800h</start>
+    <size>53000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[4]</name>
+    <start>1C0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>The Amazing Drivey F</value>
+   </variable>
+   <variable>
+    <name>level_data[4]</name>
+    <start>CED800h</start>
+    <size>6E000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[4]</name>
+    <start>D5B800h</start>
+    <size>22800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[4]</name>
+    <start>D7E000h</start>
+    <size>10000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[5]</name>
+    <start>230h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Shriney Guard</value>
+   </variable>
+   <variable>
+    <name>level_data[5]</name>
+    <start>D92800h</start>
+    <size>12B000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[5]</name>
+    <start>EBD800h</start>
+    <size>1A000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[5]</name>
+    <start>ED7800h</start>
+    <size>1000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[6]</name>
+    <start>2A0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Hard Boiler</value>
+   </variable>
+   <variable>
+    <name>level_data[6]</name>
+    <start>F44000h</start>
+    <size>C4000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[6]</name>
+    <start>1008000h</start>
+    <size>4A000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[6]</name>
+    <start>1052000h</start>
+    <size>5B000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[7]</name>
+    <start>310h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Sno</value>
+   </variable>
+   <variable>
+    <name>level_data[7]</name>
+    <start>140D800h</start>
+    <size>DB000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[7]</name>
+    <start>14E8800h</start>
+    <size>5E000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[7]</name>
+    <start>1546800h</start>
+    <size>42000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[8]</name>
+    <start>380h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Skullmonkey Brand Ho</value>
+   </variable>
+   <variable>
+    <name>level_data[8]</name>
+    <start>17FB000h</start>
+    <size>CF000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[8]</name>
+    <start>18CA000h</start>
+    <size>40800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[8]</name>
+    <start>190A800h</start>
+    <size>2B000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[9]</name>
+    <start>3F0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Joe-Head-Joe</value>
+   </variable>
+   <variable>
+    <name>level_data[9]</name>
+    <start>1A1B800h</start>
+    <size>141800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[9]</name>
+    <start>1B5D000h</start>
+    <size>1C800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[9]</name>
+    <start>1B79800h</start>
+    <size>1000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[10]</name>
+    <start>460h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Elevated Structure o</value>
+   </variable>
+   <variable>
+    <name>level_data[10]</name>
+    <start>1BE6000h</start>
+    <size>CD000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[10]</name>
+    <start>1CB3000h</start>
+    <size>5E000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[10]</name>
+    <start>1D11000h</start>
+    <size>3C800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[11]</name>
+    <start>4D0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Ynt Death Garden</value>
+   </variable>
+   <variable>
+    <name>level_data[11]</name>
+    <start>1FF3000h</start>
+    <size>C1800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[11]</name>
+    <start>20B4800h</start>
+    <size>4F000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[11]</name>
+    <start>2103800h</start>
+    <size>47800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[12]</name>
+    <start>540h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Ynt Mines</value>
+   </variable>
+   <variable>
+    <name>level_data[12]</name>
+    <start>23E1000h</start>
+    <size>C7800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[12]</name>
+    <start>24A8800h</start>
+    <size>3E000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[12]</name>
+    <start>24E6800h</start>
+    <size>3D800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[13]</name>
+    <start>5B0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Ynt Weeds</value>
+   </variable>
+   <variable>
+    <name>level_data[13]</name>
+    <start>2720800h</start>
+    <size>C5800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[13]</name>
+    <start>27E6000h</start>
+    <size>4B000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[13]</name>
+    <start>2831000h</start>
+    <size>35800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[14]</name>
+    <start>620h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Ynt Eggs</value>
+   </variable>
+   <variable>
+    <name>level_data[14]</name>
+    <start>2A25000h</start>
+    <size>C3000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[14]</name>
+    <start>2AE8000h</start>
+    <size>3E000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[14]</name>
+    <start>2B26000h</start>
+    <size>56800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[15]</name>
+    <start>690h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Glenn Yntis</value>
+   </variable>
+   <variable>
+    <name>level_data[15]</name>
+    <start>2D96000h</start>
+    <size>C4000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[15]</name>
+    <start>2E5A000h</start>
+    <size>25800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[15]</name>
+    <start>2E7F800h</start>
+    <size>1000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[16]</name>
+    <start>700h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Monk Rushmore</value>
+   </variable>
+   <variable>
+    <name>level_data[16]</name>
+    <start>2EEC000h</start>
+    <size>C8800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[16]</name>
+    <start>2FB4800h</start>
+    <size>50800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[16]</name>
+    <start>3005000h</start>
+    <size>32000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[17]</name>
+    <start>770h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>1970&apos;s</value>
+   </variable>
+   <variable>
+    <name>level_data[17]</name>
+    <start>32AB800h</start>
+    <size>D0800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[17]</name>
+    <start>337C000h</start>
+    <size>42800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[17]</name>
+    <start>33BE800h</start>
+    <size>11800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[18]</name>
+    <start>7E0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Soar Head</value>
+   </variable>
+   <variable>
+    <name>level_data[18]</name>
+    <start>34CB800h</start>
+    <size>EC000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[18]</name>
+    <start>35B7800h</start>
+    <size>3F800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[18]</name>
+    <start>35F7000h</start>
+    <size>1B000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[19]</name>
+    <start>850h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Shards</value>
+   </variable>
+   <variable>
+    <name>level_data[19]</name>
+    <start>379B800h</start>
+    <size>C7800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[19]</name>
+    <start>3863000h</start>
+    <size>4C800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[19]</name>
+    <start>38AF800h</start>
+    <size>3D800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[20]</name>
+    <start>8C0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Castle de los Muerto</value>
+   </variable>
+   <variable>
+    <name>level_data[20]</name>
+    <start>3BCD000h</start>
+    <size>CA800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[20]</name>
+    <start>3C97800h</start>
+    <size>66800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[20]</name>
+    <start>3CFE000h</start>
+    <size>4E800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[21]</name>
+    <start>930h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Monkey Mage</value>
+   </variable>
+   <variable>
+    <name>level_data[21]</name>
+    <start>3F4A800h</start>
+    <size>12C800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[21]</name>
+    <start>4077000h</start>
+    <size>2A000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[21]</name>
+    <start>40A1000h</start>
+    <size>1800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[22]</name>
+    <start>9A0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>The Incredible Drive</value>
+   </variable>
+   <variable>
+    <name>level_data[22]</name>
+    <start>410D800h</start>
+    <size>53000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[22]</name>
+    <start>4160800h</start>
+    <size>5C800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[22]</name>
+    <start>41BD000h</start>
+    <size>47000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[23]</name>
+    <start>A10h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Worm Graveyard</value>
+   </variable>
+   <variable>
+    <name>level_data[23]</name>
+    <start>42A3800h</start>
+    <size>CA000h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[23]</name>
+    <start>436D800h</start>
+    <size>67000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[23]</name>
+    <start>43D4800h</start>
+    <size>34000h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[24]</name>
+    <start>A80h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Klogg</value>
+   </variable>
+   <variable>
+    <name>level_data[24]</name>
+    <start>464E000h</start>
+    <size>AF800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[24]</name>
+    <start>46FD800h</start>
+    <size>15000h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[24]</name>
+    <start>4712800h</start>
+    <size>800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+   <variable>
+    <name>level[25]</name>
+    <start>AF0h</start>
+    <size>70h</size>
+    <type>struct LEVEL</type>
+    <value>Evil Engine #9</value>
+   </variable>
+   <variable>
+    <name>level_data[25]</name>
+    <start>477B000h</start>
+    <size>F6800h</size>
+    <type>struct DATA</type>
+   </variable>
+   <variable>
+    <name>level_data_2[25]</name>
+    <start>4871800h</start>
+    <size>42800h</size>
+    <type>struct DATA_2</type>
+   </variable>
+   <variable>
+    <name>level_data_3[25]</name>
+    <start>48B4000h</start>
+    <size>14800h</size>
+    <type>struct DATA_3</type>
+   </variable>
+  </variable>
+  <variable>
+   <name>movies</name>
+   <start>B60h</start>
+   <size>26h</size>
+   <type>struct MOVIES</type>
+  </variable>
+  <variable>
+   <name>loading_screens[32]</name>
+   <start>B86h</start>
+   <size>200h</size>
+   <type>struct LOADING_SCREEN</type>
+   <variable>
+    <name>loading_screens[0]</name>
+    <start>B86h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>1</value>
+   </variable>
+   <variable>
+    <name>loading_screens[1]</name>
+    <start>B96h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>OGO.S</value>
+   </variable>
+   <variable>
+    <name>loading_screens[2]</name>
+    <start>BA6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>NT1</value>
+   </variable>
+   <variable>
+    <name>loading_screens[3]</name>
+    <start>BB6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[4]</name>
+    <start>BC6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>AS.ST</value>
+   </variable>
+   <variable>
+    <name>loading_screens[5]</name>
+    <start>BD6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>AMM</value>
+   </variable>
+   <variable>
+    <name>loading_screens[6]</name>
+    <start>BE6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[7]</name>
+    <start>BF6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ED.ST</value>
+   </variable>
+   <variable>
+    <name>loading_screens[8]</name>
+    <start>C06h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>NTS</value>
+   </variable>
+   <variable>
+    <name>loading_screens[9]</name>
+    <start>C16h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[10]</name>
+    <start>C26h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>YE.ST</value>
+   </variable>
+   <variable>
+    <name>loading_screens[11]</name>
+    <start>C36h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>VIL</value>
+   </variable>
+   <variable>
+    <name>loading_screens[12]</name>
+    <start>C46h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>1</value>
+   </variable>
+   <variable>
+    <name>loading_screens[13]</name>
+    <start>C56h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ND.ST</value>
+   </variable>
+   <variable>
+    <name>loading_screens[14]</name>
+    <start>C66h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ND2</value>
+   </variable>
+   <variable>
+    <name>loading_screens[15]</name>
+    <start>C76h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[16]</name>
+    <start>C86h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[17]</name>
+    <start>C96h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[18]</name>
+    <start>CA6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+   </variable>
+   <variable>
+    <name>loading_screens[19]</name>
+    <start>CB6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>on</value>
+   </variable>
+   <variable>
+    <name>loading_screens[20]</name>
+    <start>CC6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>eg</value>
+   </variable>
+   <variable>
+    <name>loading_screens[21]</name>
+    <start>CD6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>pt</value>
+   </variable>
+   <variable>
+    <name>loading_screens[22]</name>
+    <start>CE6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ku</value>
+   </variable>
+   <variable>
+    <name>loading_screens[23]</name>
+    <start>CF6h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ci</value>
+   </variable>
+   <variable>
+    <name>loading_screens[24]</name>
+    <start>D06h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>on</value>
+   </variable>
+   <variable>
+    <name>loading_screens[25]</name>
+    <start>D16h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>he</value>
+   </variable>
+   <variable>
+    <name>loading_screens[26]</name>
+    <start>D26h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>hr</value>
+   </variable>
+   <variable>
+    <name>loading_screens[27]</name>
+    <start>D36h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ar</value>
+   </variable>
+   <variable>
+    <name>loading_screens[28]</name>
+    <start>D46h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>no</value>
+   </variable>
+   <variable>
+    <name>loading_screens[29]</name>
+    <start>D56h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>ku</value>
+   </variable>
+   <variable>
+    <name>loading_screens[30]</name>
+    <start>D66h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>oe</value>
+   </variable>
+   <variable>
+    <name>loading_screens[31]</name>
+    <start>D76h</start>
+    <size>10h</size>
+    <type>struct LOADING_SCREEN</type>
+    <value>le</value>
+   </variable>
+  </variable>
+  <variable>
+   <name>loading_screen_data</name>
+   <start>27A3800h</start>
+   <size>0h</size>
+   <type>struct LOADING_SCREEN_DATA</type>
+  </variable>
+ </variable>
+</template_results>
