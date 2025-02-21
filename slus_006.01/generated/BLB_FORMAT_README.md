@@ -1,54 +1,183 @@
-# BLB File Format
+# BLB Format Documentation
 
-This document describes the likely structure and purpose of the “.blb” files, based on decompiled references in “slus_006.01.c”.
+This document describes the structure of the "BLB" format as inferred from the decompiled code in the file "blb.c". This information is derived from analysis of functions that parse or manipulate "BLB" data, including clues about offsets, header fields, and how different sections are read and interpreted.
 
+--------------------------------------------------------------------------------
 ## Overview
 
-BLB files appear to store collection(s) of related assets used by the game engine, including levels, movies/cutscenes, and possibly additional data or metadata required to load them. The code uses functions like parse_blb_header, ptr_end_of_blb_header, and get_movie_count to parse these files and retrieve chunks of data.
+The "BLB" format appears to be some form of container or archive used by the game to load assets (such as movies, streams, textures, levels, etc.). Each BLB file includes:
 
-## Header Layout
+1. A header region containing:
+   - Identifiers/flags for how to interpret the data
+   - Potential type codes at offset 0xF36
+   - References to further offsets in the BLB (often at offsets 0xF92, 0xF1C, 0xB64, etc.)
 
-Although the exact structure remains partially inferred, the overall pattern suggests:
-1. A header region with fixed-size records identifying each asset or entry.
-2. A count of total entries for levels (or similar) at a known offset (found by calling ptr_end_of_blb_header).
-3. Possibly a count of movie/cutscene entries (managed by get_movie_count).
-4. An offset table or one or more listings that point to assets, which the engine iterates over to read or set up memory pointers (level_name, (&levels)[level_id], sub_level_list, etc.).
+2. Possibly multiple entries or sections that the game calls “assets,” each with a separate descriptor.  
 
-## Byte-Level Breakdown (Hypothesized)
+Much of the code in “blb.c” references constants and offsets in the BLB data structure at or after offset 0xF36. Different values at 0xF36 (and the byte at 0xF92) can change how the BLB is parsed. Many function parameters revolve around reading from base addresses (like “blb_header_ptr” plus some offset).
 
-● Offset 0 (magic/type/version): Some initial bytes or identifier indicating the file is a BLB, or zero if no explicit magic is found.  
-● Offset 2-3 (entry count): Possibly holds the number of level entries, read in a loop that populates a structure.  
-● Offset 4... at intervals: Each entry’s metadata, including pointers within the file pointing to location(s) of the actual data.  
-● Terminating region or size field: The engine calls ptr_end_of_blb_header to identify the boundary or total size.
+--------------------------------------------------------------------------------
+## High-Level Parsing Logic
 
-## Asset Types
+The code repeatedly references:
+- (blb_base_ptr + 0xF36) : This indicates a type or ID for the BLB data. Examples encountered:
+  - Value = 1 → Possibly indicates a “DREAM/PIRA/SCI” block or a special “movie” block.
+  - Value = 2 → A certain block type that includes sub-checks.
+  - Value = 3 → Another block type that triggers a different parse path.  
+  - Values 4 or 5 → Additional parse paths in “FUN_8007ae5c” or “more_parsing_of_blb” dealing with advanced data sections.
 
-1. Levels: Each entry references level data, loaded by load_level_ or related functions.  
-2. Movies/Cutscenes: get_movie_count indicates the file also stores references to “movie” data or cutscenes.  
-3. Possibly Sprites/Text Tiles: Other code references loading assets like sprites or tiles for a given level, although it’s unclear if these are contained directly in the BLB or only referenced.
+- (blb_base_ptr + 0xF92) : Often used as an index to compute further offsets. The code multiplies the byte at 0xF92 by some constant (like 0x1C, 0x0C, 0x70, 0x10) to jump to a new address that references additional data (e.g. 0xB60, 0xB64, 0xB6C, 0xCD3, 0xF1C, etc.).
 
-## Usage in Code
+- (blb_base_ptr + 0xF30) : Holds a byte used to check “blb_level_” in certain segments (the maximum number of “levels” or segments?).
 
-• parse_blb_header(astruct_5 *something, int ptr_to_level_data) – Potentially reads the BLB’s main header and populates an internal structure with offset pointers, counts, etc.  
-• ptr_end_of_blb_header(astruct_10 *buffer) – Likely obtains how many entries or the file size.  
-• level_name(int buffer, uint size) – Grabs a text string or name for each level entry.  
-• get_movie_count(int blb) – Counts how many movie references exist.  
-• movie_file_name(int blb, uint index) – Retrieves the string pointer for a movie file name.
+- (blb_base_ptr + 0xF32) : May indicate movie count or related data.
 
-## Concluding Notes
+Queries in the code revolve around these values:
+- A “type” stored at offset “+ 0xF36” 
+- A “sub-id” stored at “+0xF92”
+- Another possible “ID” at “+ 0xF31” or “+ 0xF32”
+- Arrays or tables living at 0xB60, 0xB64, 0xF1C, 0x1C-based data, 0x70-based data, etc.
 
-Because the format is partially inferred, further reverse engineering may be necessary to confirm exact offsets, field sizes, and the presence of additional unknown data. However, from the code in “slus_006.01/blb.c” and references throughout the code base, we can identify how the BLB is parsed, which data structures get populated, etc. In particular:
+From these initial references, the code branches differently and loads or interprets different sections. For instance:
+- Value = 2 often calls “get_blb_offset” & “get_blb_sector_count” to load a chunk, possibly a streaming video or texture block.
+- Value = 3 often triggers a path that references a 0x70-sized structure array.
+- Value = 1 references a 0x1C-sized structure array at offset 0xB64, apparently used for “movies” or naming references (“DREA,” “PIRA,” or “SCI”).
 
-• The “initialise_blb_struct(astruct_8 *blb_loading_struct,int buffer,void *load_asset_function)” function sets up a “blb_loading_struct”—a container that holds a pointer to the BLB data (game_blb_ptr) plus a function pointer for loading or referencing assets.
+--------------------------------------------------------------------------------
+## Magic Values / Key Offsets
 
-• The “parse_blb_header(astruct_5 *something,int ptr_to_level_data)” function reads the BLB’s header section to locate specific entries. It checks values at offsets like 0xf36, 0xf92, etc. to determine how many sub-entries exist and what each one contains.
+The BLB data uses many “magic offsets” or “tags”:
+1. **Offset 0xF36**  
+   The primary “Type/ID” byte. Checking this determines how to parse.  
+   Observed Values:
+   • 0x01: Possibly movie references like “DREA” or “PIRA.”  
+   • 0x02, 0x03, 0x04, 0x05, 0x06: Trigger other parse routines.  
 
-• The “ptr_end_of_blb_header(astruct_10 *buffer)” function returns a byte from the BLB header region (0xf31 offset) used to determine how many entries are in the file, or a boundary in the header.
+2. **Offset 0xF92**  
+   Byte used as an index multiplied by 0xC, 0x1C, 0x10, or 0x70 to locate sub-block entries.  
+   In the code, we see:
+   • If (type = 1), index * 0x1C + 0xB64  
+   • If (type = 2), index * 0x0C + 0xF1C  
+   • If (type = 3), index * 0x70 + 0x?? (various fields)  
+   • If (type in 4 or 5), index * 0x10 + 0xCD3, etc.
 
-• Calls like “load_game_blb_asset(offset,sector_count,u_long *buffer_pointer)” indicate that data from the BLB may be loaded from disc, using offset and sector counts in the BLB’s header.
+3. **Offsets 0xF30, 0xF31, 0xF32**  
+   - 0xF31 or 0xF32 might be counters for how many “movies” or segments exist.  
+   - 0xF30 is used in logic comparing “blb_level_” with *(base + 0xF30).
 
-• Specific values of (byte)0x01, (byte)0x02, (byte)0x03, etc. can identify different resource types (levels, cutscenes, etc.), with code branching depending on these values. At run time, the engine checks these bytes to decide whether to load a movie reference or a level resource.
+4. **Reference Offsets in the Data**  
+   The code references addresses like 0xB60, 0xB64, 0xB6C, 0xCD3, 0xF1C, 0xECC, 0xF36, 0xF92, 0xCCC, etc. Many of these are sub-structures or sub-headers.  
+   - 0xB60 → Possibly a 2-byte field for “Another asset pointer” if type=1.  
+   - 0xB64 → Possibly the “movie file name pointer” if type=1.  
+   - 0xB6C → Another pointer for certain movie references.  
+   - 0xF1C → Typically used if type=2.  
+   - 0x70 blocks → If type=3, references chunked data of size 0x70.  
+   - 0x1C blocks → If type=1, references chunked data of size 0x1C.  
+   - 0xC blocks → If type=2, references chunked data of size 0xC.  
+   - 0x10 blocks → If type=4 or 5, references chunked data of size 0x10.
 
-Thus, from the game code, a .blb file is effectively a multi-entry container of level definitions, references to movie/cutscene data, and offset tables for each resource chunk. Further reverse engineering or debugging can confirm how many total entries exist, what each block stores, and any unknown fields remaining in the BLB format.
+5. **IDs / “Tags”**  
+   In function “parse_blb_header” and “more_parsing_of_blb,” there are references to IDs:  
+   - 0x65, 0x66, 100 (0x64), 200 (0xC8), 300 (0x12C), 400 (0x190), 500 (0x1F4), 600 (0x258), 700 (0x2BC), 0x259, 0x25A, etc.  
+   - These appear to be sub-chunk or “asset” IDs within the BLB, each pointing to some memory offset for that data.  
+   - For instance, if “uVar7 == 600,” store a pointer in “something->field16_0x40,” etc.  
+   - Another example: if “uVar7 == 0x25A,” store in “field20_0x50.”  
 
-Additionally, the “slus_006.01/blb_template.bt” file provides an illustrative 010 Editor template for parsing .blb files. It shows loops and structures hypothesized to represent levels, movies, offsets, size fields, and embedded data sections. This template suggests that each resource block includes metadata (offset, size, entry ID) followed by raw content, and that the game iterates across these blocks to load or process each asset.
+These IDs likely represent distinct data blocks:
+- 0x191 (“⟳???”)  
+- 0x1F5, 0x1F6, 0x1F7, 0x1F8 (“cutscene” blocks or advanced data)  
+- 0x259, 0x25A, 0x258 (some special resources, e.g. a sound or a texture block).
+  
+--------------------------------------------------------------------------------
+## Parsing Flow
+
+From the code, a typical parse sequence involves:
+1. **Locate BLB base pointer**  
+   Usually stored in something like “blb_header_ptr” or “blb_base_ptr.”
+
+2. **Calculate an offset**  
+   offset = blb_header_ptr + (byte)(someField) + 0xF36 or 0xF92, etc.
+
+3. **Check the “type/ID”**  
+   The byte at offset (0xF36) drives logic (switch statements like “case 1, 2, 3, 4, 5”).
+
+4. **Use the byte at offset (0xF92) as an index**  
+   Multiply by a block size (0x1C, 0x0C, 0x70, 0x10, etc.) to locate a sub-array. Then read sub-fields or parameters from that sub-array (like offsets, sector counts, file references, memory pointers, etc.).
+
+5. **Extract more data**  
+   Code reading various “IDs” or chunk markers (0x65, 0x66, 300, 400, 500, 600, etc.) in a loop. Each ID leads to storing a pointer or length in the final structure.
+
+6. **Load or interpret**  
+   The loaded pointers or offsets might be used to decompress data, load a “.STR” (movie), or parse further sub-chunks.  
+
+--------------------------------------------------------------------------------
+## Potential Magic or Signature Values
+
+No obvious plain-text signatures (like “BLB\0”) appear in the code. Instead, the “magic” references revolve around these numeric offsets (0xF36, 0xF92, etc.). The only textual references are for strings like “DREA,” “PIRA,” “SCI,” or “INT1_BLB,” “CRD1_BLB,” “MVDWI.STR” which may be actual asset names. Also references “END2_BLB,” “INT1_BLB,” “PIRA2_BLB,” etc. These presumably identify big blocks inside the BLB.
+
+--------------------------------------------------------------------------------
+## Typical Examples in the Code
+
+### Example of type=1 (0xF36 = 1)  
+
+• The code calls “(index * 0x1C) + 0xB64,” possibly retrieving a pointer to “MVDWI.STR” or some string that references a movie file.  
+• Another pointer is loaded from “(index * 0x1C) + 0xB60,” and so forth.  
+
+### Example of type=2 (0xF36 = 2)  
+
+• Uses “(index * 0x0C) + 0xF1C.”  
+• Data might detail sector offsets for streaming a chunk from disc.  
+
+### Example of type=3 (0xF36 = 3)  
+
+• Uses “(index * 0x70).”  
+• The code sets up some “uVar6, uVar7 = *(some16BitData).”  
+• Possibly more complex chunk referencing.
+
+### Example of type=4/5 (0xF36 = 4 or 5)  
+
+• Uses “(index * 0x10) + 0xCD3.”  
+• Possibly advanced or compressed data blocks.
+
+--------------------------------------------------------------------------------
+## Data Structures
+
+Multiple structures are used in the code, like “astruct_8,” “astruct_5,” “astruct_14,” etc. Key fields:
+
+• “game_blb_ptr” (int)  
+  - Usually points to the start of the BLB data in memory.  
+
+• “blb_header_ptr” (int)  
+  - Another pointer referencing the early offset in the BLB.  
+
+• “blb_level_” (byte) or “set_to_a_on_start” (byte)  
+  - Some level or iteration index.  
+
+• Offsets or pointers to sub-chunks  
+  - The code sets fields in the struct to pointers after reading certain IDs. For example, “field30_0x6c,” “field18_0x48,” etc.  
+
+--------------------------------------------------------------------------------
+## Summary of Observations
+
+1. The BLB format is not trivially labeled by a 4-byte ASCII signature, but rather controlled by values stored at offsets 0xF36 and 0xF92 within the data.  
+2. 0xF36 is the main “Type/ID” controlling how data is parsed (1 through 6 are the main values).  
+3. 0xF92 is a sub-index that, when multiplied by a block size (0x1C, 0x0C, 0x70, or 0x10), references additional sub-chunks.  
+4. Many sub-chunk IDs exist (up to hundreds, e.g., 300, 400, 500, 600, 700, 0x259, 0x25A, etc.), each referencing different data or instructions.  
+5. The code calls functions that load or decompress these sub-chunks for use in the game.  
+6. “Movie” or streaming logic references addresses like “0xB64,” “MVDWI.STR,” or “DREA/PIRA/SCI,” possibly referencing cinematics or audio streams.  
+
+--------------------------------------------------------------------------------
+## Notes on Using the Format
+
+• To parse a BLB file manually:  
+  1) Read offset 0xF36 to get the “type.”  
+  2) Read offset 0xF92 for the “sub-index.”  
+  3) Depending on the type, compute the base using “sub-index * (block size) + some offset.”  
+  4) Within that sub-block, read 2-byte or 4-byte values that represent addresses, sizes, or asset IDs.  
+  5) If needed, reference other structures for chunk IDs like 300, 0x12C, 0xF4, 0x1F4, etc.
+
+• The presence of multiple “sub-chunk IDs” within the same BLB header suggests a flexible container format. The game engine uses these IDs to find and map the correct data segment.  
+
+--------------------------------------------------------------------------------
+
+This document is based on reverse-engineered logic from “blb.c.” Due to the nature of decompilation, some naming or interpretations may be speculative. However, the consistent references to type codes at 0xF36, sub-index usage at 0xF92, and sub-chunk IDs appear to be the core of how the BLB format is parsed in this Playstation game.
